@@ -23,6 +23,7 @@ public:
 public slots:
     void startNordPy();
     void stopNordPy();
+    void refreshStatus();
 
 private:
     bool m_connecting;

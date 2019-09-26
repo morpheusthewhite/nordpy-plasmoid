@@ -9,32 +9,38 @@ NordPyConnectionManager::NordPyConnectionManager()
         // connecting initially until VPN status is retrieved
         setConnecting(true);
         
-        QString program = "nordpy";
-        QStringList arguments;
-        arguments << "--status";
+        refreshStatus();
+}
 
-        QProcess *nordpyProcess = new QProcess();
-        
-        // redirect stdout to main stdout
-        nordpyProcess->setProcessChannelMode(QProcess::SeparateChannels);
-        
-        connect(nordpyProcess, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
-            [=]  (int exitCode, QProcess::ExitStatus exitStatus) 
-            {
-                QString output(nordpyProcess->readAllStandardOutput());
-                
-                if(output.contains("Enabled")) setConnected(true);
-                setConnecting(false);
-            });
+void NordPyConnectionManager::refreshStatus(){
+    QString program = "nordpy";
+    QStringList arguments;
+    arguments << "--status";
+
+    QProcess *nordpyProcess = new QProcess();
     
-        // register signal on error
-        connect(nordpyProcess, &QProcess::errorOccurred, 
-            [=](QProcess::ProcessError error) 
-            {
-                setConnecting(false);
-            });
-        
-        nordpyProcess->start(program, arguments);
+    // redirect stdout to main stdout
+    nordpyProcess->setProcessChannelMode(QProcess::SeparateChannels);
+    
+    connect(nordpyProcess, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
+        [=]  (int exitCode, QProcess::ExitStatus exitStatus) 
+        {
+            QString output(nordpyProcess->readAllStandardOutput());
+            
+            if(output.contains("Enabled")) setConnected(true);
+            else setConnected(false);
+            
+            setConnecting(false);
+        });
+
+    // register signal on error
+    connect(nordpyProcess, &QProcess::errorOccurred, 
+        [=](QProcess::ProcessError error) 
+        {
+            setConnecting(false);
+        });
+    
+    nordpyProcess->start(program, arguments);
 }
 
 bool NordPyConnectionManager::connecting(){

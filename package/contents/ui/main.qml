@@ -12,6 +12,8 @@ Item {
     property var connecting: nordpyManager.connecting
     property var ipText: "Retrieving IP..."
     
+    property int refreshIntervalMs: 30000
+    
     Plasmoid.fullRepresentation: ColumnLayout {
         id: rootLayout
         
@@ -79,5 +81,13 @@ Item {
          onConnectedChanged: {
              ipScript.sendMessage({})
          }
+    }
+    
+    Timer {
+        interval: root.refreshIntervalMs; running: true; repeat: true
+        onTriggered: {
+            console.log("Refreshing status")
+            nordpyManager.refreshStatus()
+        }
     }
 }
