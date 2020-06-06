@@ -14,6 +14,7 @@ A Plasma widget to control [NordPy](https://github.com/morpheusthewhite/nordpy);
 
 ## Installation
 
-Before installing this plasmoid make sure to have `polkit` and `nordpy` (at least version 1.3.2) on your system.
+Before installing this plasmoid make sure to have `polkit` and `nordpy` (at least version 1.3.2) on your system, and the [KDE Extra CMake modules](https://superuser.com/a/912259).
 
 Then just run `./build.sh`.
+
